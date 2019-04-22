@@ -42,7 +42,7 @@ While a computer simulation can essentially execute commands near instantaneousl
 Latency is accounted for in the MPC since the time forecast (time prediction window) is 750 ms (N * dt = 15 * 0.05 = 0.75), and therefore extends beyond 100 ms.
 
 ### Weights Optimization
-A key method of producing smooth movement was the addition and tunning of weights to the equations governing driving behavior (steering, acceleration, etc.). In the following code blocks from MPC.cpp, the large weight values and tunning of the 0.55 weight for velocity were determined through various simulation runs. If weights were too low, driving behaviour would be erratic as left-right oscillations of steering would quickly become so large that the vehicle would leave the road surface. These weights provided a balance between smooth acceleration and trajectory accuracy for a successful drive around the simulation course.
+A key method of producing smooth movement was the addition and tuning of weights to the equations governing driving behavior (steering, acceleration, etc.). In the following code blocks from MPC.cpp, the large weight values and tuning of the 0.55 weight for velocity were determined through various simulation runs. If weights were too low, driving behaviour would be erratic as left-right oscillations of steering would quickly become so large that the vehicle would leave the road surface. These weights provided a balance between smooth acceleration and trajectory accuracy for a successful drive around the simulation course.
 
 ```
     for (int t = 0; t < N; t++) {
