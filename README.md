@@ -41,6 +41,29 @@ While a computer simulation can essentially execute commands near instantaneousl
 
 Latency is accounted for in the MPC since the time forecast (time prediction window) is 750 ms (N * dt = 15 * 0.05 = 0.75), and therefore extends beyond 100 ms.
 
+### Weights Optimization
+A key method of producing smooth movement was the addition and tunning of weights to the equations governing driving behavior (steering, acceleration, etc.). In the following code blocks from MPC.cpp, the large weight values and tunning of the 0.55 weight for velocity were determined through various simulation runs. If weights were too low, driving behaviour would be erratic as left-right oscillations of steering would quickly become so large that the vehicle would leave the road surface. These weights provided a balance between smooth acceleration and trajectory accuracy for a successful drive around the simulation course.
+
+```
+    for (int t = 0; t < N; t++) {
+      fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);
+      fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2);
+      fg[0] += 0.55*CppAD::pow(vars[v_start + t] - ref_v, 2);
+    }
+
+    // Minimize the actuator strengths
+    for (int t = 0; t < N - 1; t++) {
+      fg[0] += 3000*CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 150*CppAD::pow(vars[a_start + t], 2);
+    }
+    
+    // A high weight coefficient defines how smooth the steering angle is
+    for (int t = 0; t < N - 2; t++) {
+      fg[0] += 35000*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += 100*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+    }
+```
+
 ### Simulation Video
 A video of the driving simulation is available at:
 https://youtu.be/ybz404VX6m4
