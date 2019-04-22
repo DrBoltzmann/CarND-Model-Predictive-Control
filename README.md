@@ -1,4 +1,4 @@
-[image001]: ./images/vehicle_kinematics_model.png "vehicle_kinematics_model"
+[image001]: images/vehicle_kinematics_model.png "vehicle_kinematics_model"
 
 
 # CarND-Controls-MPC
