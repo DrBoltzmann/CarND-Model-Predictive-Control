@@ -52,7 +52,8 @@ int main() {
            * TODO: Calculate steering angle and throttle using MPC.
            * Both are in between [-1, 1].
            */
-          
+          // Waypoint data is transformed from the global to the
+          // local vehicle perspective
           for (unsigned int i = 0; i < ptsx.size(); i++) {
             // Shift car reference angle to 90 degrees
             double shift_x = ptsx[i] - px;
@@ -74,6 +75,7 @@ int main() {
           double* ptry = &ptsy[0];
           Eigen::Map<Eigen::VectorXd> ptsy_transform(ptry, 6);
           
+          // Polynomial fit to transformed waypoints
           auto coeffs = polyfit(ptsx_transform, ptsy_transform, 3);
             
           double cte = polyeval(coeffs, 0);

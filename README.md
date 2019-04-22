@@ -1,4 +1,4 @@
-[image001]: images/vehicle_kinematics_model.png "vehicle_kinematics_model"
+[image001]: vehicle_kinematics_model.png "vehicle_kinematics_model"
 
 
 # CarND-Controls-MPC
@@ -18,12 +18,14 @@ The future state of the vehicle is determined by the kinematics model:
 
 ![alt text][image001]
 
+### Waypoint Preprocessing
+The waypoint data was converted 
+
 ### Actuation Parameters
 The actuation of the vehicle is performed with acceleration and delta values, which are defined as follows:
 
 * The acceleration is in the range of -1 to 1, which translates as a full actuation of the throttle or full braking.
 * The steering angle is defined in the range of -25° to 25°.
-
 
 ### Time Prediction Window
 The separation between t and t + 1 steps is defined by a time-step internal distance (N) and the duration (dt) in seconds. These parameters can be tuned to predict far into the future along the input trajectory, however this comes at the cost of increased computation time. The prediction time into the future is then simply N * dt. The N and dt values were evaluated to obtain ideal driving behavior.
@@ -31,10 +33,8 @@ The separation between t and t + 1 steps is defined by a time-step internal dist
 ### Cost Function Constraints
 Alongside the time-step and duration, the constraints placed on the cost function were critical in producing smooth steering on the vehicle. The constraint parameter weights were essential to minimize the orientation error and actuations.
 
-
 ### Polynomial Fitting and MPC Preprocessing
-In the preprocessing stage, the waypoint data is transformed from the global map reference to the local vehicle coordinate system. Then, a 3rd degree polynomial line can be fit to the waypoint dataset. The equation coefficients of the Polynomial then define the cte and epsi values in computing the trajectory.
-
+In the preprocessing stage, the waypoint data is transformed from the global map reference to the local vehicle coordinate system in main.cpp line 57-65. Then, a 3rd degree polynomial line can be fit to the waypoint dataset (main.cpp line 78). The equation coefficients of the Polynomial then define the cte and epsi values in computing the trajectory.
 
 ### Latency Integration
 While a computer simulation can essentially execute commands near instantaneously, in reality a latency exists between driver decisions and actions (steering, throttle, etc.). This is accounted for with a 100 ms delay integrated into the main.cpp code at line 90 - 98. Here the calculation of state variables are delayed by 0.1 sec (100 ms).
