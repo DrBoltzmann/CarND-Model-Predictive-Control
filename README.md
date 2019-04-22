@@ -1,6 +1,49 @@
 # CarND-Controls-MPC
-Self-Driving Car Engineer Nanodegree Program
+---
+## Model Predictive Controller (MPC)
+---
 
+### Overview
+This project is focused on the implementation of a MPC to control a self-driving car in a simulation environment. Essentially the MPC takes the 2D state of the vehicle and predicts the future position. The project code implements a vehicle kinematics model and control of the vehicle based on a generated trajectory which attempts to match to an input trajectory. The MPC is designed to follow the input trajectory according to the vehicle kinematics model, and actuation commands are then sent to the vehicle (steering, acceleration and braking). The difference between the two trajectories is minimized via a cost function.
+
+### State and Kinematics Model
+The state is defined by position (x, y), orientation angle (psi) and velocity (vx, vy). This is defined for a time, t. The state is essentially an input to the kinematic model which predicts the future state at t+1.
+
+The model utilizes a cross track error (cte) value, which is the distance from the input waypoint trajectory to the state. The orientation error (epsi) similarly characterizes the mismatch from the trajectory orientation and the vehicle state.
+
+The future state of the vehicle is determined by the kinematics model:
+
+![vehicle_kinematics_model](./images/vehicle_kinematics_model.png)
+
+### Actuation Parameters
+The actuation of the vehicle is performed with acceleration and delta values, which are defined as follows:
+
+* The acceleration is in the range of -1 to 1, which translates as a full actuation of the throttle or full braking.
+* The steering angle is defined in the range of -25° to 25°.
+
+
+### Time Prediction Window
+The separation between t and t + 1 steps is defined by a time-step internal distance (N) and the duration (dt) in seconds. These parameters can be tuned to predict far into the future along the input trajectory, however this comes at the cost of increased computation time. The prediction time into the future is then simply N * dt. The N and dt values were evaluated to obtain ideal driving behavior.
+
+### Cost Function Constraints
+Alongside the time-step and duration, the constraints placed on the cost function were critical in producing smooth steering on the vehicle. The constraint parameter weights were essential to minimize the orientation error and actuations.
+
+
+### Polynomial Fitting and MPC Preprocessing
+In the preprocessing stage, the waypoint data is transformed from the global map reference to the local vehicle coordinate system. Then, a 3rd degree polynomial line can be fit to the waypoint dataset. The equation coefficients of the Polynomial then define the cte and epsi values in computing the trajectory.
+
+
+### Latency Integration
+While a computer simulation can essentially execute commands near instantaneously, in reality a latency exists between driver decisions and actions (steering, throttle, etc.). This is accounted for with a 100 ms delay integrated into the main.cpp code at line 90 - 98. Here the calculation of state variables are delayed by 0.1 sec (100 ms).
+
+Latency is accounted for in the MPC since the time forecast (time prediction window) is 750 ms (N * dt = 15 * 0.05 = 0.75), and therefore extends beyond 100 ms.
+
+### Simulation Video
+A video of the driving simulation is available at:
+https://youtu.be/ybz404VX6m4
+
+# Udacity README Content
+### This describes the original project description and details for necessary dependencies, packages, and build instructions.
 ---
 
 ## Dependencies
