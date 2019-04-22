@@ -13,7 +13,7 @@ The model utilizes a cross track error (cte) value, which is the distance from t
 
 The future state of the vehicle is determined by the kinematics model:
 
-![vehicle_kinematics_model](images/vehicle_kinematics_model.png)
+![vehicle_kinematics_model](vehicle_kinematics_model.png)
 
 ### Actuation Parameters
 The actuation of the vehicle is performed with acceleration and delta values, which are defined as follows:
