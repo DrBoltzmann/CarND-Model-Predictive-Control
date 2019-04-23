@@ -45,27 +45,36 @@ Latency is accounted for in the MPC since the time forecast (time prediction win
 A key method of producing smooth movement was the addition and tuning of weights to the equations governing driving behavior (steering, acceleration, etc.). In the following code blocks from MPC.cpp, the large weight values and tuning of the 0.55 weight for velocity were determined through various simulation runs. If weights were too low, driving behaviour would be erratic as left-right oscillations of steering would quickly become so large that the vehicle would leave the road surface. These weights provided a balance between smooth acceleration and trajectory accuracy for a successful drive around the simulation course.
 
 ```
+    // Minimize the cte, epsi and reference speed values
+    // Weights were tested to optimize driving behaviour
     for (int t = 0; t < N; t++) {
       fg[0] += 2000*CppAD::pow(vars[cte_start + t], 2);
       fg[0] += 2000*CppAD::pow(vars[epsi_start + t], 2);
       fg[0] += 0.55*CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
-
+    
     // Minimize the actuator strengths
+    // Weights were tested to optimize driving behaviour
     for (int t = 0; t < N - 1; t++) {
-      fg[0] += 3000*CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += 150*CppAD::pow(vars[a_start + t], 2);
+      fg[0] += 300*CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 50*CppAD::pow(vars[a_start + t], 2);
     }
     
     // A high weight coefficient defines how smooth the steering angle is
+    // Weight reduced a bit to improve maneuvarability
     for (int t = 0; t < N - 2; t++) {
-      fg[0] += 35000*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += 30000*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
       fg[0] += 100*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 ```
 
 ### Simulation Video
 A video of the driving simulation is available at:
+MPC_Solution_002
+https://youtu.be/pPOldf-f5Wk
+
+MPC_Solution_002 improves greatly on MPC_Solution_001 version, which attained a lower maximum speed and had more erratic handling on corners. The initial solution, which had an inverted steering angle in the main.cpp file and incorrect latency definition is available below:
+MPC_Solution_001
 https://youtu.be/ybz404VX6m4
 
 # Udacity README Content
