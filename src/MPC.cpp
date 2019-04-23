@@ -82,13 +82,14 @@ class FG_eval {
     // Minimize the actuator strengths
     // Weights were tested to optimize driving behaviour
     for (int t = 0; t < N - 1; t++) {
-      fg[0] += 3000*CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += 150*CppAD::pow(vars[a_start + t], 2);
+      fg[0] += 300*CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 50*CppAD::pow(vars[a_start + t], 2);
     }
     
     // A high weight coefficient defines how smooth the steering angle is
+    // Weight reduced a bit to improve maneuvarability
     for (int t = 0; t < N - 2; t++) {
-      fg[0] += 35000*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += 30000*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
       fg[0] += 100*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 
@@ -141,7 +142,7 @@ class FG_eval {
       // Defining the rate of change to update the next time step
       fg[1 + x_start + i] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt);
       fg[1 + y_start + i] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
-      fg[1 + psi_start + i] = psi1 - (psi0 - v0 * delta0/Lf * dt);
+      fg[1 + psi_start + i] = psi1 - (psi0 - v0 * delta0/Lf * dt); // changed sign to of steer_angle in main.cpp to positive, and kept this part negative
       fg[1 + v_start + i] = v1 - (v0 + a0 * dt);
       fg[1 + cte_start + i] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
       fg[1 + epsi_start + i] = epsi1 - ((psi0 - psides0) + v0 * delta0/Lf * dt);

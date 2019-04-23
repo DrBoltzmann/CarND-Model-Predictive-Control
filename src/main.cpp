@@ -92,10 +92,17 @@ int main() {
           // Implement a 100ms latency delay to the state variables
           px = v * cos(psi) * L_dt;
           py = v * sin(psi) * L_dt;
-          psi = v * psi / Lf * L_dt;
-          v = v + throttle_value * L_dt;
+          
+          // cte and epsi updated before psi and v
+          // to take the values of the previous time-step
           cte = cte + v * sin(epsi) * L_dt;
-          epsi = epsi + v * psi / Lf * L_dt;          
+          epsi = epsi + v * psi / Lf * L_dt;           
+          
+          // update of psi includes delta via steer_value
+          //psi = v * psi / Lf * L_dt;
+          psi = -v * steer_value / Lf * L_dt;
+          v = v + throttle_value * L_dt;
+         
           
           Eigen::VectorXd state(6);
           state << px, py, psi, v, cte, epsi;
@@ -116,7 +123,7 @@ int main() {
           // NOTE: Remember to divide by deg2rad(25) before you send the 
           //   steering value back. Otherwise the values will be in between 
           //   [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-          msgJson["steering_angle"] = -1.0 * steer_value;
+          msgJson["steering_angle"] = 1.0 * steer_value;
           msgJson["throttle"] = throttle_value;
 
           // Display the MPC predicted trajectory 
@@ -139,23 +146,6 @@ int main() {
 
           msgJson["mpc_x"] = mpc_x_vals;
           msgJson["mpc_y"] = mpc_y_vals;
-          
-          // Display the waypoints/reference line
-          //vector<double> next_x_vals;
-          //vector<double> next_y_vals;
-/*
-          double poly_inc = 2.5;
-          int num_points = 25;
-          
-          for (int i = 1; i < num_points; i++) {
-            next_x_vals.push_back(poly_inc * i);
-            next_y_vals.push_back(polyeval(coeffs, poly_inc * i));
-          }
-  */        
-
-          // Display the waypoints/reference line
-          //vector<double> next_x_vals;
-          //vector<double> next_y_vals;
 
           /**
            * TODO: add (x,y) points to list here, points are in reference to 
